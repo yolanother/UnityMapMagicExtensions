@@ -7,9 +7,16 @@ using UnityEngine;
 namespace com.doubtech.mapmagic.generators {
     [ExecuteInEditMode]
     public class MapMagicStamper : MonoBehaviour {
-        public bool mouseDown;
-
-        public MapMagicStamperGenerator Generator { get; set; }
+        private MapMagicStamperGenerator generator;
+        public MapMagicStamperGenerator Generator { get {
+                return generator;
+            }
+            set {
+                generator = value;
+                transform.localScale = new Vector3(generator.scale, generator.intensity, generator.scale);
+                Offset = new Vector3(generator.offset.x, 0, generator.offset.y);
+            }
+        }
 
         public Vector3 Offset {
             get {

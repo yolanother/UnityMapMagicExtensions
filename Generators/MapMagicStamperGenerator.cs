@@ -24,8 +24,6 @@ namespace com.doubtech.mapmagic.generators {
                     GameObject go = new GameObject("Stamper");
                     go.transform.parent = mm;
                     stamper = go.AddComponent<MapMagicStamper>();
-                    stamper.transform.localScale = new Vector3(scale, intensity, scale);
-                    stamper.Offset = new Vector3(offset.x, 0, offset.y);
                     stamper.Generator = this;
                     Selection.activeObject = stamper;
                 }
