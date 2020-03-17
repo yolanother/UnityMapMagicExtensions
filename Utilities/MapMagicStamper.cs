@@ -7,7 +7,9 @@ using UnityEngine;
 namespace com.doubtech.mapmagic.generators {
     [ExecuteInEditMode]
     public class MapMagicStamper : MonoBehaviour {
-        public MapMagicStamperGenerator Generator { get; internal set; }
+        public bool mouseDown;
+
+        public MapMagicStamperGenerator Generator { get; set; }
 
         public Vector3 Offset {
             get {
@@ -26,9 +28,7 @@ namespace com.doubtech.mapmagic.generators {
         }
 
         void Update() {
-            Vector2 offset = new Vector2(Offset.x, Offset.z);
-            float scale = transform.localScale.x;
-            float intensity = transform.localScale.y;
+            MapMagic.MapMagic mm = MapMagic.MapMagic.instance;
 
             // Adjust transform to valid stamper coords
             transform.localScale = new Vector3(
@@ -36,12 +36,26 @@ namespace com.doubtech.mapmagic.generators {
                 Mathf.Clamp(transform.localScale.y, 0, 1),
                 transform.localScale.x);
 
-            if (transform.hasChanged) {
+            float y = MapMagic.MapMagic.instance.transform.position.y + mm.terrainHeight * transform.localScale.y;
+            if(y != transform.position.y) {
+                transform.position = new Vector3(transform.position.x, y, transform.position.z);
+            }
+        }
+
+        public void Generate() {
+            MapMagic.MapMagic mm = MapMagic.MapMagic.instance;
+            Vector2 offset = new Vector2(Offset.x, Offset.z);
+            float scale = transform.localScale.x;
+            float intensity = transform.localScale.y;
+
+
+            if (null != Generator && (offset != Generator.offset || scale != Generator.scale || intensity != Generator.intensity)) {
+                Debug.Log("Generating...");
                 Generator.offset = offset;
                 Generator.scale = scale;
                 Generator.intensity = intensity;
-                MapMagic.MapMagic.instance.ClearResults();
-                MapMagic.MapMagic.instance.Generate(true);
+                mm.ClearResults(Generator);
+                mm.Generate(true);
             }
         }
 
